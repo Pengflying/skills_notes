@@ -23,4 +23,8 @@
 
 2023/1/19
 
-- [ ]  volatile修饰符
+- [x]  volatile修饰符
+
+2023/1/21
+
+- [ ] DCL双锁检测（double checked locking）机制
