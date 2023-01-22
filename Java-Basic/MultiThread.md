@@ -134,6 +134,15 @@ class MarryCompany implements Marry{
 
 
 
+
+
+### 创建线程的三种方式的对比
+
+- 1. 采用实现 Runnable、Callable 接口的方式创建多线程时，线程类只是实现了 Runnable 接口或 Callable 接口，还可以继承其他类。
+- 2. 使用继承 Thread 类的方式创建多线程时，编写简单，如果需要访问当前线程，则无需使用 Thread.currentThread() 方法，直接使用 this 即可获得当前线程。
+
+
+
 ## 线程状态
 
 - new
@@ -389,3 +398,192 @@ Executors:工具类、线程池的工厂类，用于创建并返回不同类型�
 
 
 
+
+
+1、线程池，其实就是一个容纳多个线程的容器，其中的线程可以反复使用，省去了频繁创建线程对象的操作，无需反复创建线程而消耗过多资源。（是什么）
+
+2、那么，我们为什么需要用到线程池呢？每次用的时候手动创建不行吗？
+
+在java中，如果每个请求到达就创建一个新线程，开销是相当大的。在实际使用中，创建和销毁线程花费的时间和消耗的系统资源都相当大，甚至可能要比在处理实际的用户请求的时间和资源要多的多。除了创建和销毁线程的开销之外，活动的线程也需要消耗系统资源。如果在一个jvm里创建太多的线程，可能会使系统由于过度消耗内存或“切换过度”而导致系统资源不足。为了防止资源不足，需要采取一些办法来限制任何给定时刻处理的请求数目，尽可能减少创建和销毁线程的次数，特别是一些资源耗费比较大的线程的创建和销毁，尽量利用已有对象来进行服务。（为什么）
+
+线程池主要用来解决线程生命周期开销问题和资源不足问题。通过对多个任务重复使用线程，线程创建的开销就被分摊到了多个任务上了，而且由于在请求到达时线程已经存在，所以消除了线程创建所带来的延迟。这样，就可以立即为请求服务，使用应用程序响应更快；另外，通过适当的调整线程中的线程数目可以防止出现资源不足的情况。（什么用）
+
+3、线程池都是通过线程池工厂创建，再调用线程池中的方法获取线程，再通过线程去执行任务方法。
+
+-  **Executors**：线程池创建工厂类
+-  **public static ExecutorServicenewFixedThreadPool(int nThreads)**：返回线程池对象
+-  **ExecutorService**：线程池类
+-  **Future<?> submit(Runnable task)**：获取线程池中的某一个线程对象，并执行
+-  **Future 接口**：用来记录线程任务执行完毕后产生的结果。线程池创建与使用
+
+4、这里介绍两种使用线程池创建线程的方法
+
+**1）：使用Runnable接口创建线程池**
+
+使用线程池中线程对象的步骤：
+
+-  1、创建线程池对象
+-  2、创建 Runnable 接口子类对象
+-  3、提交 Runnable 接口子类对象
+-  4、关闭线程池
+
+**Test.java** 代码如下：
+
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Test {
+    public static void main(String[] args) {
+        //创建线程池对象  参数5，代表有5个线程的线程池
+        ExecutorService service = Executors.newFixedThreadPool(5);
+        //创建Runnable线程任务对象
+        TaskRunnable task = new TaskRunnable();
+        //从线程池中获取线程对象
+        service.submit(task);
+        System.out.println("----------------------");
+        //再获取一个线程对象
+        service.submit(task);
+        //关闭线程池
+        service.shutdown();
+    }
+}
+```
+
+TaskRunnable.java 接口文件如下：
+
+```java
+public class TaskRunnable implements Runnable{
+    @Override
+    public void run() {
+        for (int i = 0; i < 1000; i++) {
+            System.out.println("自定义线程任务在执行"+i);
+        }
+    }
+}
+```
+
+2）使用Callable接口创建线程池
+
+Callable接口：与Runnable接口功能相似，用来指定线程的任务。其中的call()方法，用来返回线程任务执行完毕后的结果，call方法可抛出异常。
+
+**ExecutorService**：线程池类
+
+**<T> Future<T> submit(Callable<T> task)**：获取线程池中的某一个线程对象，并执行线程中的 call() 方法
+
+**Future 接口**：用来记录线程任务执行完毕后产生的结果。线程池创建与使用
+
+使用线程池中线程对象的步骤：
+
+-  1、创建线程池对象
+-  2、创建 Callable 接口子类对象
+-  3、提交 Callable 接口子类对象
+-  4、关闭线程池
+
+Test.java 代码如下：
+
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Test{
+    public static void main(String[] args) {
+        ExecutorService service = Executors.newFixedThreadPool(3);
+        TaskCallable c = new TaskCallable();
+        //线程池中获取线程对象，调用run方法
+        service.submit(c);
+        //再获取一个
+        service.submit(c);
+        //关闭线程池
+        service.shutdown();
+    }
+}
+```
+
+TaskCallable.java 接口文件如下：
+
+```java
+import java.util.concurrent.Callable;
+
+public class TaskCallable implements Callable<Object>{
+    @Override
+    public Object call() throws Exception {
+        for (int i = 0; i < 1000; i++) {
+            System.out.println("自定义线程任务在执行"+i);
+        }
+        return null;
+    }
+}
+```
+
+
+
+
+
+##### 线程池练习：返回两个数相加的结果
+
+要求：通过线程池中的线程对象，使用Callable接口完成两个数求和操作
+
+**Future 接口**：用来记录线程任务执行完毕后产生的结果。
+
+**线程池创建与使用**：get() 获取 Future对象中封装的数据结果
+
+ThreadPoolDemo.java 文件代码如下：
+
+```java
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class ThreadPoolDemo {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        //创建线程池对象
+        ExecutorService threadPool = Executors.newFixedThreadPool(2);
+        
+        //创建一个Callable接口子类对象
+        //MyCallable c = new MyCallable();
+        MyCallable c = new MyCallable(100, 200);
+        MyCallable c2 = new MyCallable(10, 20);
+        
+        //获取线程池中的线程，调用Callable接口子类对象中的call()方法, 完成求和操作
+        //<Integer> Future<Integer> submit(Callable<Integer> task)
+        // Future 结果对象
+        Future<Integer> result = threadPool.submit(c);
+        //此 Future 的 get 方法所返回的结果类型
+        Integer sum = result.get();
+        System.out.println("sum=" + sum);
+        
+        //再演示
+        result = threadPool.submit(c2);
+        sum = result.get();
+        System.out.println("sum=" + sum);
+        //关闭线程池(可以不关闭)
+        
+    }
+}
+```
+
+MyCallable.java 接口文件代码如下：
+
+```java
+import java.util.concurrent.Callable;
+
+public class MyCallable implements Callable<Integer> {
+    //成员变量
+    int x = 5;
+    int y = 3;
+    //构造方法
+    public MyCallable(){
+    }
+    public MyCallable(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        return x+y;
+    }
+}
+```
