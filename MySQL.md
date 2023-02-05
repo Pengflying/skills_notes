@@ -290,6 +290,28 @@ ALTER TABLE t4 MODIFY id INT PRIMARY KEY;
 ALTER TABLE t3 ADD CONSTRAINT un_primary PRIMARY KEY(id, name);
 ```
 
+```sql
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    CONSTRAINT PK_Person PRIMARY KEY (ID,LastName)
+);
+```
+
+**Note:** In the example above there is only ONE `PRIMARY KEY` (PK_Person). However, the VALUE of the primary key is made up of TWO COLUMNS (ID + LastName).
+
+
+
+DROP a PRIMARY KEY Constraint
+
+```sql
+ALTER TABLE Persons DROP PRIMARY KEY;
+```
+
+
+
 ###### ZEROFILL
 
 1. 这种用法，可以大量用于所谓“流水号”的生成上。比如，想要生成日期_0x的流水号。可以直接拼接

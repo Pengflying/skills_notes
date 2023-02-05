@@ -915,7 +915,7 @@ public PlatformTransactionManager transactionManager(DataSource dataSource){
 
 开启注解式事务驱动
 
-```
+```java
 @EnableTransactionManagement
 ```
 

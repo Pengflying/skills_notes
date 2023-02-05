@@ -181,7 +181,7 @@ try (SqlSession session = sqlSessionFactory.openSession()) {
 
 ## 一些笔记
 
-MyBatic将JDBC的硬编码转为配置文件，将参数，封装结果集转变为自动完成
+MyBatis将JDBC的硬编码转为配置文件，将参数，封装结果集转变为自动完成
 
 
 
