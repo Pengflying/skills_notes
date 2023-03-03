@@ -2,9 +2,9 @@
 
 2023/1/14
 
-- [ ] MyBatis的sql语句构建方式
+- [x] MyBatis的sql语句构建方式
 
-- [ ] MySQL还要一些细节
+- [x] MySQL还要一些细节
 
 - [ ] url编码
 
@@ -27,4 +27,4 @@
 
 2023/1/21
 
-- [ ] DCL双锁检测（double checked locking）机制
+- [x] DCL双锁检测（double checked locking）机制

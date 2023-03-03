@@ -412,3 +412,51 @@ ps.setInt(1,id);
   delete from Author where id = #{id}
 </delete>
 ```
+
+
+
+
+
+# 开发中常用语句
+
+## 按特定条件统计
+
+```
+你可以使用MySQL的COUNT(CASE WHEN condition THEN column END)语句来计算满足某个条件的行数。例如，在products表中，如果你要计算满足price>10的行数，你可以使用如下语句：
+
+SELECT COUNT(CASE WHEN price > 10 THEN price END) FROM products;
+
+这将返回满足price>10的行数。
+```
+
+```
+SELECT OrderID, Quantity,
+CASE
+    WHEN Quantity > 30 THEN 'The quantity is greater than 30'
+    WHEN Quantity = 30 THEN 'The quantity is 30'
+    ELSE 'The quantity is under 30'
+END AS QuantityText
+FROM OrderDetails;
+```
+
+
+
+## SOME和ANY
+
+The difference between the keywords SOME and ANY in MySQL is that SOME is used in conjunction with an inequality comparison operator (such as <, >, <=, or >=) while ANY is used with an equality comparison operator (such as = or !=). For example, you can use the SOME keyword in the following statement to find records where the value of a certain column is greater than some value:
+
+
+
+```cpp
+SELECT * FROM table_name WHERE column_name > SOME (SELECT value FROM another_table);
+```
+
+And you can use the ANY keyword in the following statement to find records where the value of a certain column is equal to any value:
+
+
+
+```cpp
+SELECT * FROM table_name WHERE column_name = ANY (SELECT value FROM another_table);
+```
+
+The SOME and ANY keywords can also be used with other comparison operators, such as != and <=.
