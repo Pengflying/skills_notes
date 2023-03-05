@@ -89,6 +89,10 @@ pre-site -> site -> post-site
 安装 mvn install
 ```
 
+### 在idae中配置
+
+设置.xml文件一定要是settings.xml,其他名字的配置文件设置了也不会生效
+
 ## POM
 
 ```xml
